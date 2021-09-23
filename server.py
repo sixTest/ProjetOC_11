@@ -1,6 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-
+from exceptions import EmailNotFound
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -13,6 +13,12 @@ def loadCompetitions():
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
 
+def getClubByEmail(email, clubs):
+    try:
+        club = [club for club in clubs if club['email'] == email][0]
+    except IndexError:
+        raise EmailNotFound()
+    return club
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
@@ -26,8 +32,12 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    try:
+        club = getClubByEmail(request.form['email'], clubs)
+        return render_template('welcome.html', club=club, competitions=competitions)
+    except EmailNotFound as e:
+        error = e.msg
+    return render_template('index.html', error=error)
 
 
 @app.route('/book/<competition>/<club>')
