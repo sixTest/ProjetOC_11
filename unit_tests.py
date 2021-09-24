@@ -1,6 +1,6 @@
 import unittest
-from server import getClubByEmail
-from exceptions import EmailNotFound
+from server import getClubByEmail, checkPlacesRequired
+from exceptions import EmailNotFound, NotEnoughPoints
 
 
 class TestFormEmail(unittest.TestCase):
@@ -17,6 +17,19 @@ class TestFormEmail(unittest.TestCase):
     def test_returned_club_if_email_does_exist(self):
         club = getClubByEmail('email_club_1', self.clubs)
         self.assertEqual(club['name'], 'club_1')
+
+
+class TestFormBooking(unittest.TestCase):
+
+    def setUp(self):
+        self.points_club = 10
+
+    def test_exception_is_raised_if_places_required_are_greater_than_points_club(self):
+        with self.assertRaises(NotEnoughPoints):
+            checkPlacesRequired(11, self.points_club)
+
+    def test_return_if_places_required_are_less_or_equal_than_points_club(self):
+        self.assertEqual(checkPlacesRequired(9, self.points_club), 9)
 
 
 if __name__ == '__main__':
