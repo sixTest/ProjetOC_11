@@ -1,6 +1,8 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces
+from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces, \
+    CompetitionIsClosed
+from datetime import datetime
 
 MAX_BOOKING_PLACES = 12
 
@@ -30,6 +32,12 @@ def checkPlacesRequired(places_required, places_competition, points_club):
     if places_required > MAX_BOOKING_PLACES:
         raise BookingLimitPlaces()
     return places_required
+
+def checkDateCompetition(date_competition):
+    date = datetime.now()
+    date_competition = datetime.strptime(date_competition, "%Y-%m-%d %H:%M:%S")
+    if date_competition <= date:
+        raise CompetitionIsClosed()
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
@@ -67,6 +75,7 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     try:
+        checkDateCompetition(competition['date'])
         placesRequired = checkPlacesRequired(int(request.form['places']),
                                              int(competition['numberOfPlaces']),
                                              int(club['points']))
@@ -74,7 +83,7 @@ def purchasePlaces():
         club['points'] = int(club['points']) - placesRequired
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
-    except (ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces) as e:
+    except (ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces, CompetitionIsClosed) as e:
         error = e.msg
     return render_template('booking.html', club=club, competition=competition, error=error)
 
