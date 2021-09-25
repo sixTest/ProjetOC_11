@@ -1,6 +1,6 @@
 import unittest
 from server import getClubByEmail, checkPlacesRequired
-from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces
+from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces
 
 
 class TestFormEmail(unittest.TestCase):
@@ -35,6 +35,10 @@ class TestFormBooking(unittest.TestCase):
 
     def test_return_if_places_required_are_less_or_equal_than_points_club_and_competition_places(self):
         self.assertEqual(checkPlacesRequired(10, self.competition_places, self.points_club), 10)
+
+    def test_exception_is_raised_if_places_required_are_greater_than_limit_booking_places(self):
+        with self.assertRaises(BookingLimitPlaces):
+            checkPlacesRequired(13, self.competition_places, points_club=14)
 
 
 if __name__ == '__main__':
