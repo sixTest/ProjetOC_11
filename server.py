@@ -1,6 +1,8 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces
+from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces
+
+MAX_BOOKING_PLACES = 12
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -25,6 +27,8 @@ def checkPlacesRequired(places_required, places_competition, points_club):
         raise CompetitionNotEnoughPlaces()
     if places_required > points_club:
         raise ClubNotEnoughPoints()
+    if places_required > MAX_BOOKING_PLACES:
+        raise BookingLimitPlaces()
     return places_required
 
 app = Flask(__name__)
@@ -70,7 +74,7 @@ def purchasePlaces():
         club['points'] = int(club['points']) - placesRequired
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
-    except (ClubNotEnoughPoints, CompetitionNotEnoughPlaces) as e:
+    except (ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces) as e:
         error = e.msg
     return render_template('booking.html', club=club, competition=competition, error=error)
 
