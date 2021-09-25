@@ -1,6 +1,8 @@
 import unittest
-from server import getClubByEmail, checkPlacesRequired
-from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces
+from server import getClubByEmail, checkPlacesRequired, checkDateCompetition
+from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces, \
+    CompetitionIsClosed
+from datetime import datetime, timedelta
 
 
 class TestFormEmail(unittest.TestCase):
@@ -39,6 +41,17 @@ class TestFormBooking(unittest.TestCase):
     def test_exception_is_raised_if_places_required_are_greater_than_limit_booking_places(self):
         with self.assertRaises(BookingLimitPlaces):
             checkPlacesRequired(13, self.competition_places, points_club=14)
+
+    def test_exception_is_raised_if_competition_is_closed(self):
+        date = datetime.now() - timedelta(days=1)
+        str_date = date.strftime('%Y-%m-%d %H:%M:%S')
+        with self.assertRaises(CompetitionIsClosed):
+            checkDateCompetition(str_date)
+
+    def test_exception_not_raised_if_competition_is_not_closed(self):
+        date = datetime.now() + timedelta(days=1)
+        str_date = date.strftime('%Y-%m-%d %H:%M:%S')
+        checkDateCompetition(str_date)
 
 
 if __name__ == '__main__':

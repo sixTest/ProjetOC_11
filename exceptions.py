@@ -25,7 +25,15 @@ class CompetitionNotEnoughPlaces(Exception):
 
 class BookingLimitPlaces(Exception):
     def __init__(self):
-        self.msg = "Sorry a club can only book a maximum of 12 places"
+        self.msg = "Sorry a club can only book a maximum of 12 places."
+
+    def __str__(self):
+        return self.msg
+
+
+class CompetitionIsClosed(Exception):
+    def __init__(self):
+        self.msg = "Sorry the competition is closed."
 
     def __str__(self):
         return self.msg
