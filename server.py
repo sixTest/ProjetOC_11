@@ -5,6 +5,7 @@ from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughP
 from datetime import datetime
 
 MAX_BOOKING_PLACES = 12
+POINT_VALUE_FOR_PLACE = 3
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -27,7 +28,7 @@ def getClubByEmail(email, clubs):
 def checkPlacesRequired(places_required, places_competition, points_club):
     if places_required > places_competition:
         raise CompetitionNotEnoughPlaces()
-    if places_required > points_club:
+    if places_required*POINT_VALUE_FOR_PLACE > points_club:
         raise ClubNotEnoughPoints()
     if places_required > MAX_BOOKING_PLACES:
         raise BookingLimitPlaces()
@@ -80,7 +81,7 @@ def purchasePlaces():
                                              int(competition['numberOfPlaces']),
                                              int(club['points']))
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-        club['points'] = int(club['points']) - placesRequired
+        club['points'] = int(club['points']) - placesRequired*POINT_VALUE_FOR_PLACE
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
     except (ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces, CompetitionIsClosed) as e:

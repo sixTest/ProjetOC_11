@@ -27,20 +27,23 @@ class TestFormBooking(unittest.TestCase):
         self.points_club = 10
         self.competition_places = 15
 
-    def test_exception_is_raised_if_places_required_are_greater_than_points_club(self):
+    def test_exception_is_raised_if_places_required_are_greater_than_points_required(self):
         with self.assertRaises(ClubNotEnoughPoints):
-            checkPlacesRequired(11, self.competition_places, self.points_club)
+            checkPlacesRequired(4, self.competition_places, self.points_club)
+
+    def test_exception_is_not_raised_if_places_required_are_less_than_points_required(self):
+        checkPlacesRequired(3, self.competition_places, self.points_club)
 
     def test_exception_is_raised_if_places_required_are_greater_than_competition_places(self):
         with self.assertRaises(CompetitionNotEnoughPlaces):
             checkPlacesRequired(16, self.competition_places, self.points_club)
 
-    def test_return_if_places_required_are_less_or_equal_than_points_club_and_competition_places(self):
-        self.assertEqual(checkPlacesRequired(10, self.competition_places, self.points_club), 10)
+    def test_return_if_places_required_are_less_or_equal_than_points_required_and_competition_places(self):
+        self.assertEqual(checkPlacesRequired(3, self.competition_places, self.points_club), 3)
 
     def test_exception_is_raised_if_places_required_are_greater_than_limit_booking_places(self):
         with self.assertRaises(BookingLimitPlaces):
-            checkPlacesRequired(13, self.competition_places, points_club=14)
+            checkPlacesRequired(13, places_competition=39, points_club=39)
 
     def test_exception_is_raised_if_competition_is_closed(self):
         date = datetime.now() - timedelta(days=1)
