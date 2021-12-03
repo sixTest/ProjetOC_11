@@ -33,3 +33,24 @@ Environnement par default:
 Environnement test:
 * Email:
     * club@test.com
+
+### Rapports Locust test
+
+Rapport avant modification :
+
+![](locust/rapport_locust_before.png)
+
+Rapport apres modification :
+
+![](locust/rapport_locust_after.png)
+
+
+### Rapports coverage test
+
+Rapport avant modification :
+
+![](coverage/coverage_rapport_before.png)
+
+Rapport apres modification :
+
+![](coverage/coverage_rapport_after.png)
