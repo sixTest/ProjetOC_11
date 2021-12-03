@@ -3,20 +3,28 @@ from flask import Flask,render_template,request,redirect,flash,url_for
 from exceptions import EmailNotFound, ClubNotEnoughPoints, CompetitionNotEnoughPlaces, BookingLimitPlaces, \
     CompetitionIsClosed
 from datetime import datetime
+import os
+
+DATA_FOR_TESTING = os.environ.get("TESTING", default='0')
 
 MAX_BOOKING_PLACES = 12
 POINT_VALUE_FOR_PLACE = 3
 
 def loadClubs():
     with open('clubs.json') as c:
-         listOfClubs = json.load(c)['clubs']
-         return listOfClubs
-
+        if DATA_FOR_TESTING == '1':
+            listOfClubs = json.load(c)['clubs_test']
+        else:
+            listOfClubs = json.load(c)['clubs']
+        return listOfClubs
 
 def loadCompetitions():
     with open('competitions.json') as comps:
-         listOfCompetitions = json.load(comps)['competitions']
-         return listOfCompetitions
+        if DATA_FOR_TESTING == '1':
+            listOfCompetitions = json.load(comps)['competitions_test']
+        else:
+            listOfCompetitions = json.load(comps)['competitions']
+        return listOfCompetitions
 
 def getClubByEmail(email, clubs):
     try:
@@ -39,6 +47,7 @@ def checkDateCompetition(date_competition):
     date_competition = datetime.strptime(date_competition, "%Y-%m-%d %H:%M:%S")
     if date_competition <= date:
         raise CompetitionIsClosed()
+
 
 app = Flask(__name__)
 app.secret_key = 'something_special'

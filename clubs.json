@@ -13,4 +13,11 @@
         "email": "kate@shelifts.co.uk",
         "points":"12"
     }
+],
+"clubs_test":[
+    {
+        "name":"club_test",
+        "email":"club@test.com",
+        "points":"1000"
+    }
 ]}

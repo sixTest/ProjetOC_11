@@ -10,5 +10,31 @@
             "date": "2020-10-22 13:30:00",
             "numberOfPlaces": "13"
         }
-    ]
-}
+    ],
+    "competitions_test":[
+        {
+            "name": "competition_closed_test",
+            "date": "2020-03-27 10:00:00",
+            "numberOfPlaces": "25"
+        },
+        {
+            "name": "competition_not_enough_places_test",
+            "date": "2050-10-22 13:30:00",
+            "numberOfPlaces": "1"
+        },
+        {
+            "name": "competition_club_not_enough_points_test",
+            "date": "2050-10-22 13:30:00",
+            "numberOfPlaces": "1001"
+        },
+        {
+            "name": "competition_booking_limit_places_test",
+            "date": "2050-10-22 13:30:00",
+            "numberOfPlaces": "25"
+        },
+        {
+            "name": "competition_valid_test",
+            "date": "2050-10-22 13:30:00",
+            "numberOfPlaces": "25"
+        }
+]}
